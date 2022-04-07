@@ -3,6 +3,7 @@ import {Button, View, Text} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 function SettingsScreen({navigation}) {
   return (
@@ -58,7 +59,26 @@ const HomeStack = createNativeStackNavigator();
 export default function App() {
   return (
     <NavigationContainer>
-      <Tab.Navigator screenOptions={{headerShown: false}}>
+      <Tab.Navigator
+        screenOptions={({route}) => ({
+          headerShown: false,
+          tabBarActiveTintColor: 'red',
+          tabBarInactiveTintColor: 'blue',
+          tabBarIcon: ({focused, color, size}) => {
+            let iconName;
+            if (route.name === 'First') {
+              iconName = focused
+                ? 'ios-information-circle'
+                : 'ios-information-circle-outline';
+            }
+            if (route.name === 'Second') {
+              iconName = focused ? 'ios-list-box' : 'ios-list';
+            }
+            console.log(size);
+            console.log(color);
+            return <Ionicons name={iconName} size={size} color={color} />;
+          },
+        })}>
         <Tab.Screen name="First">
           {() => (
             <SettingsStack.Navigator>
