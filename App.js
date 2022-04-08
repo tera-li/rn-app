@@ -3,7 +3,7 @@ import {Button, View, Text} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 function SettingsScreen({navigation}) {
   return (
@@ -76,10 +76,10 @@ export default function App() {
             }
             console.log(size);
             console.log(color);
-            return <Ionicons name={iconName} size={size} color={color} />;
+            return <FontAwesome name={'wpforms'} size={30} color={color} />;
           },
         })}>
-        <Tab.Screen name="First">
+        <Tab.Screen name="First" options={{tabBarBadge: 3}}>
           {() => (
             <SettingsStack.Navigator>
               <SettingsStack.Screen
