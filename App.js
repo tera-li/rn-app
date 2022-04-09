@@ -1,104 +1,82 @@
 import * as React from 'react';
-import {Button, View, Text} from 'react-native';
+import {Text, View, Button} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
-
-function SettingsScreen({navigation}) {
+import {
+  SafeAreaProvider,
+  useSafeAreaInsets,
+} from 'react-native-safe-area-context';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {createStackNavigator} from '@react-navigation/stack';
+function Demo() {
+  const insets = useSafeAreaInsets();
   return (
-    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-      <Text>Settings Screen</Text>
-      <Button
-        title="Go to Profile"
-        onPress={() => navigation.navigate('Profile')}
-      />
+    <View
+      style={{
+        flex: 1,
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: insets.bottom,
+        marginTop: insets.top,
+      }}>
+      <Text>This is top text.</Text>
+      <Text>This is bottom text1.</Text>
     </View>
   );
 }
 
-function ProfileScreen({navigation}) {
-  return (
-    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-      <Text>Profile Screen</Text>
-      <Button
-        title="Go to Settings"
-        onPress={() => navigation.navigate('Settings')}
-      />
-    </View>
-  );
-}
-
-function HomeScreen({navigation}) {
-  return (
-    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-      <Text>Home Screen</Text>
-      <Button
-        title="Go to Details"
-        onPress={() => navigation.navigate('Details')}
-      />
-    </View>
-  );
-}
-
-function DetailsScreen({navigation}) {
-  return (
-    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-      <Text>Details Screen</Text>
-      <Button
-        title="Go to Details... again"
-        onPress={() => navigation.push('Details')}
-      />
-    </View>
-  );
-}
+const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
-const SettingsStack = createNativeStackNavigator();
-const HomeStack = createNativeStackNavigator();
+const rootStack = createStackNavigator();
+
+function MyStack() {
+  return (
+    <rootStack.Navigator>
+      <rootStack.Screen
+        name="Home"
+        screenOptions={{presentation: 'modal'}}
+        component={({navigation}) => (
+          <Button
+            title="Home"
+            onPress={() => navigation.navigate('Notifications')}></Button>
+        )}
+      />
+      <rootStack.Group screenOptions={{presentation: 'modal'}}>
+        <rootStack.Screen
+          name="Notifications"
+          component={() => <Text>Notifications</Text>}
+        />
+      </rootStack.Group>
+
+      <rootStack.Screen name="Profile" component={() => <Text>Profile</Text>} />
+      <rootStack.Screen
+        name="Settings"
+        component={() => <Text>Settings</Text>}
+      />
+    </rootStack.Navigator>
+  );
+}
 
 export default function App() {
   return (
     <NavigationContainer>
-      <Tab.Navigator
-        screenOptions={({route}) => ({
-          headerShown: false,
-          tabBarActiveTintColor: 'red',
-          tabBarInactiveTintColor: 'blue',
-          tabBarIcon: ({focused, color, size}) => {
-            let iconName;
-            if (route.name === 'First') {
-              iconName = focused
-                ? 'ios-information-circle'
-                : 'ios-information-circle-outline';
-            }
-            if (route.name === 'Second') {
-              iconName = focused ? 'ios-list-box' : 'ios-list';
-            }
-            console.log(size);
-            console.log(color);
-            return <FontAwesome name={'wpforms'} size={30} color={color} />;
-          },
-        })}>
-        <Tab.Screen name="First" options={{tabBarBadge: 3}}>
+      <Stack.Navigator
+        initialRouteName="Home"
+        screenOptions={{headerShown: false}}>
+        <Stack.Screen name="Home">
           {() => (
-            <SettingsStack.Navigator>
-              <SettingsStack.Screen
-                name="Settings"
-                component={SettingsScreen}
-              />
-              <SettingsStack.Screen name="Profile" component={ProfileScreen} />
-            </SettingsStack.Navigator>
+            <Tab.Navigator
+              initialRouteName="Analitics"
+              tabBar={() => null}
+              screenOptions={{headerShown: false}}>
+              <Tab.Screen name="Analitics" component={MyStack} />
+              <Tab.Screen name="Profile" component={Demo} />
+            </Tab.Navigator>
           )}
-        </Tab.Screen>
-        <Tab.Screen name="Second">
-          {() => (
-            <HomeStack.Navigator>
-              <HomeStack.Screen name="Home" component={HomeScreen} />
-              <HomeStack.Screen name="Details" component={DetailsScreen} />
-            </HomeStack.Navigator>
-          )}
-        </Tab.Screen>
-      </Tab.Navigator>
+        </Stack.Screen>
+
+        <Stack.Screen name="Settings" component={Demo} />
+      </Stack.Navigator>
     </NavigationContainer>
   );
 }
