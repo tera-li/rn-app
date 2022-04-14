@@ -1,6 +1,10 @@
 import * as React from 'react';
 import {Text, View, Button} from 'react-native';
-import {NavigationContainer} from '@react-navigation/native';
+import {
+  NavigationContainer,
+  DefaultTheme,
+  DarkTheme,
+} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {
   SafeAreaProvider,
@@ -34,14 +38,14 @@ function MyStack() {
     <rootStack.Navigator>
       <rootStack.Screen
         name="Home"
-        screenOptions={{presentation: 'modal'}}
+        options={{headerShown: false}}
         component={({navigation}) => (
           <Button
             title="Home"
             onPress={() => navigation.navigate('Notifications')}></Button>
         )}
       />
-      <rootStack.Group screenOptions={{presentation: 'modal'}}>
+      <rootStack.Group options={{presentation: 'modal'}}>
         <rootStack.Screen
           name="Notifications"
           component={() => <Text>Notifications</Text>}
@@ -56,20 +60,34 @@ function MyStack() {
     </rootStack.Navigator>
   );
 }
-
+const Analitics = ({navigation}) => {
+  return <Text onPress={() => navigation.navigate('Settings')}>123</Text>;
+};
 export default function App() {
+  const MyTheme = {
+    ...DefaultTheme,
+    colors: {
+      ...DefaultTheme.colors,
+      // primary: 'rgb(255, 45, 85)',
+    },
+  };
   return (
-    <NavigationContainer>
+    <NavigationContainer theme={MyTheme}>
       <Stack.Navigator
         initialRouteName="Home"
-        screenOptions={{headerShown: false}}>
+        screenOptions={{headerShown: false, presentation: 'modal'}}>
         <Stack.Screen name="Home">
           {() => (
-            <Tab.Navigator
-              initialRouteName="Analitics"
-              tabBar={() => null}
-              screenOptions={{headerShown: false}}>
-              <Tab.Screen name="Analitics" component={MyStack} />
+            <Tab.Navigator initialRouteName="Analitics" tabBarPosition="top">
+              <Tab.Screen
+                name="Analitics"
+                component={Analitics}
+                options={{
+                  tabBarInactiveBackgroundColor: 'red',
+                  tabBarBadge: 3,
+                  tabBarLabelPosition: 'below-icon',
+                }}
+              />
               <Tab.Screen name="Profile" component={Demo} />
             </Tab.Navigator>
           )}
